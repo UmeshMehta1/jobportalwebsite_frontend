@@ -105,7 +105,6 @@ export function registerUser(data){
 
 
 
-
 //for login
 export function loginUser(data){
     return async function loginUserThunk(dispatch){
@@ -122,6 +121,9 @@ export function loginUser(data){
         
         try {
             const response = await API.post("/auth/login", data)
+            
+
+
             
             // Check if response is successful and has token
             if(response && response.status === 200 && response.data && response.data.token){
