@@ -1,18 +1,32 @@
 import { useState } from "react"
 
 import { registerUser } from "../store/authslice.js"
+import {useSelector,useDispatch} from "react-redux"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 const Register = () => {
+const location = useLocation()
 
- 
+const dispatch = useDispatch()
+const navigate = useNavigate()
+
+  const initialrole=  location.state?.role
+
+  const {status,error} = useSelector((state)=>state.auth)
+
+ //
+
   const [formData, setFormData]=useState({
-    name:"",
+   name:"",
     email:"",
     password:"",
-    role:"jobseeker",
+    role:initialrole, 
   })
 
   const handleChange=(e)=>{
     const {name,value}= e.target
+
+    //const name = e.target.name
+    //const value = e.target.value
     setFormData((prev)=>({
       ...prev,
       [name]:value
@@ -20,7 +34,15 @@ const Register = () => {
   }
 
   const handleSubmit=async(e)=>{
+    e.preventDefault()
+      const result= await dispatch(registerUser(formData))
 
+      console.log(result)
+      if(result.success){
+           navigate("/login")
+      }else{
+        alert("something wrong")
+      }
   }
   
   return (

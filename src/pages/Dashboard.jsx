@@ -1,9 +1,20 @@
 import { useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom"
+import { logOut } from "../store/authslice"
 
 const Dashboard = () => {
+const dispatch = useDispatch()
+const navigate = useNavigate()
+  const {data} = useSelector((state)=>state.auth)
+
+  console.log(data)
  
     const handleLogout = ()=>{
-       
+
+      console.log("hello")
+       dispatch(logOut(data))
+       navigate("/login")
     }
 
   return (

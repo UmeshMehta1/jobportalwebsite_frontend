@@ -1,7 +1,16 @@
 import { useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { loginUser } from "../store/authslice"
+import { Link, useNavigate } from "react-router-dom"
 
 
 const Login = () => {
+
+const dispatch = useDispatch()
+const navigate= useNavigate()
+
+  const {status, error}=useSelector((state)=>state.auth)
+
 
   const [formData, setFormData]=useState({
     email:"",
@@ -12,13 +21,25 @@ const Login = () => {
 
   const handleSubmit =async(e)=>{
     e.preventDefault()
-  
+    const result=await dispatch((loginUser(formData)))
+
+    if(result.success){
+     navigate("/dashboard")
+    }else{
+      alert("something wrong")
+    }
   }
 
 
-
   const handleChange=(e)=>{
-   
+      const {name,value}= e.target
+
+    //const name = e.target.name
+    //const value = e.target.value
+    setFormData((prev)=>({
+      ...prev,
+      [name]:value
+    }))
   }
 
 
