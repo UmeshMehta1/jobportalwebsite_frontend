@@ -1,27 +1,39 @@
 import { useState } from "react"
-import { Link } from "react-router-dom"
+
 
 const Login = () => {
 
-  const [formData, setFormData]=useState("")
-  const handleSubmit =()=>{
+  const [formData, setFormData]=useState({
+    email:"",
+    password:"",
+  })
 
+
+
+  const handleSubmit =async(e)=>{
+    e.preventDefault()
+  
   }
 
-  const handleChange=()=>{
 
+
+  const handleChange=(e)=>{
+   
   }
+
+
+
   return (
     <div className="max-w-md mx-auto my-12 px-5">
       <div className="bg-white p-8 rounded-lg shadow-md">
         <h2 className="mb-5 text-center text-2xl font-semibold">Login</h2>
 
-        {/* Error Message Display */}
-        {/* {error && (
+       
+        {error && (
           <div className="bg-red-100 text-red-800 p-3 rounded mb-5">
             {error}
           </div>
-        )} */}
+        )}
 
         {/* Login Form */}
         <form onSubmit={handleSubmit}>
@@ -52,7 +64,7 @@ const Login = () => {
           </div>
 
           {/* Submit Button */}
-          {/* <button
+          <button
             type="submit"
             disabled={status === 'loading'}
             className={`w-full py-3 rounded text-white font-medium text-base transition-colors ${
@@ -62,9 +74,8 @@ const Login = () => {
             }`}
           >
             {status === 'loading' ? 'Logging in...' : 'Login'}
-          </button> */}
-
-          <button>submit</button>
+          </button>
+       
         </form>
 
         {/* Link to Register */}
@@ -75,6 +86,7 @@ const Login = () => {
           </Link>
         </p>
       </div>
+
     </div>
   )
 }

@@ -1,16 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { API } from "../http/index";
 
 const STATUSES = Object.freeze({
     IDLE: "idle",
     ERROR: "error",
     LOADING: "loading",
+    SUCCESS: "success",
 })
 
 const authSlice = createSlice({
-    name:"auth",
+    name: "auth",
 
-    initialState:{
-        data:[],  
+    initialState: {
+        data: [],  
         status: STATUSES.IDLE,
         token: localStorage.getItem('token') || "",
         isAuthenticated: !!localStorage.getItem('token'),
@@ -18,41 +20,53 @@ const authSlice = createSlice({
     },
 
     reducers: {
-          setUser(state, action){
-            state.data= action.payload
+        setUser(state, action) {
+            state.data = action.payload
             state.isAuthenticated = true
         },
 
-        setStatus(state,action){
-            state.status= action.payload
+        setStatus(state, action) {
+            state.status = action.payload
         },
 
-        setError(state, action){
+        setError(state, action) {
             state.error = action.payload
         },
 
-        setToken(state, action){
-            state.token= action.payload
-            if(action.payload){
+        setToken(state, action) {
+            state.token = action.payload
+            if (action.payload) {
                 state.isAuthenticated = true
             }
         },
-    }
 
+        logOut(state) {
+            state.data = []
+            state.token = ""
+            state.isAuthenticated = false
+            state.error = null
+            state.status = STATUSES.IDLE
+            localStorage.removeItem('token')
+        },
+
+        clearError(state) {
+            state.error = null
+        },
+    }
 })
 
-
-export const {setUser, setStatus, setToken, logOut, clearError, setError}= authSlice.actions
+export const { setUser, setStatus, setToken, logOut, clearError, setError } = authSlice.actions
 
 export default authSlice.reducer
 
 //register user
-export function registerUser(data){
-    return async function registerUserThunk(dispatch){
+export function registerUser(data) {
+    return async function registerUserThunk(dispatch) {
         dispatch(setStatus(STATUSES.LOADING))
         dispatch(clearError())
-        // Validate input
-        if (!data.username || !data.email || !data.password) {
+        
+        // Validate input - updated to match form fields
+        if (!data.name || !data.email ||!data.role || !data.password) {
             const errorMessage = "All fields are required"
             dispatch(setError(errorMessage))
             dispatch(setStatus(STATUSES.ERROR))
@@ -62,16 +76,13 @@ export function registerUser(data){
         try {
             const response = await API.post("/auth/register", data)
             
-            // Check if response is successful and has data
             if (response && response.status === 201 && response.data) {
-                // if backend returns created user, save it in state
                 if (response.data.data) {
                     dispatch(setUser(response.data.data))
                 }
                 dispatch(setStatus(STATUSES.SUCCESS))
                 return { success: true, data: response.data }
             } else {
-                // Response doesn't have expected data
                 const errorMessage = response.data?.message || "Registration failed. Invalid response from server."
                 dispatch(setError(errorMessage))
                 dispatch(setStatus(STATUSES.ERROR))
@@ -79,16 +90,12 @@ export function registerUser(data){
             }
 
         } catch (e) {
-            // Log full error details to help debugging (network / server response)
             console.error('registerUser error:', e)
             let errorMessage = "Registration failed"
             
             if (e.response) {
                 console.error('server response:', e.response.status, e.response.data)
-                // Get backend message if available
-            
                 errorMessage = e.response.data?.message || e.response.data?.error || "Registration failed. Please check your information."
-                alert(errorMessage) // Show alert for user feedback
             } else if (e.request) {
                 console.error('no response received:', e.request)
                 errorMessage = "No response from server. Please check your connection."
@@ -103,15 +110,12 @@ export function registerUser(data){
     }
 }
 
-
-
 //for login
-export function loginUser(data){
-    return async function loginUserThunk(dispatch){
+export function loginUser(data) {
+    return async function loginUserThunk(dispatch) {
         dispatch(setStatus(STATUSES.LOADING))
         dispatch(clearError())
         
-        // Validate input
         if (!data.email || !data.password) {
             const errorMessage = "Email and password are required"
             dispatch(setError(errorMessage))
@@ -122,23 +126,13 @@ export function loginUser(data){
         try {
             const response = await API.post("/auth/login", data)
             
-
-
-            
-            // Check if response is successful and has token
-            if(response && response.status === 200 && response.data && response.data.token){
-                // Store token in localStorage
+            if (response && response.status === 200 && response.data && response.data.token) {
                 localStorage.setItem('token', response.data.token)
-                
-                // Update Redux state
                 dispatch(setUser(response.data.data))
                 dispatch(setToken(response.data.token))
                 dispatch(setStatus(STATUSES.SUCCESS))
-                
-                // Return success for component to handle navigation
                 return { success: true, data: response.data }
             } else {
-                // Response doesn't have token
                 const errorMessage = response.data?.message || "Login failed. Invalid response from server."
                 dispatch(setError(errorMessage))
                 dispatch(setStatus(STATUSES.ERROR))
@@ -149,15 +143,12 @@ export function loginUser(data){
             let errorMessage = "Something went wrong"
             
             if (error.response) {
-                // Server responded with error (401, 400, etc.)
                 errorMessage = error.response.data?.message || error.response.data?.error || "Login failed. Please check your credentials."
                 console.error('Server error:', error.response.status, error.response.data)
             } else if (error.request) {
-                // Request made but no response
                 errorMessage = "No response from server. Please check your connection."
                 console.error('No response:', error.request)
             } else {
-                // Error setting up request
                 errorMessage = error.message || "An error occurred during login"
             }
             
