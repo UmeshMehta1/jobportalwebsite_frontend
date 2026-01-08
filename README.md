@@ -780,11 +780,12 @@ const JobApplicationsUI = ({
   )
 }
 
-export default JobApplicationsUI```
+export default JobApplicationsUI
+```
 
 ##MyApplicationsUI.jsx 
-
-```const MyApplicationsUI = ({
+```
+const MyApplicationsUI = ({
   applications = [],
   loading = false,
   error = "",
