@@ -60,9 +60,11 @@ const LandingpageUI = ({ jobs = [], loading = false, error = "", onJobClick, onV
   )
 }
 
-export default LandingpageU```
+export default LandingpageU
+```
 
-  JobDetailUI.jsx
+  ##JobDetailUI.jsx
+  ```
 const JobDetailUI = ({
   job,
   isJobProvider = false,
