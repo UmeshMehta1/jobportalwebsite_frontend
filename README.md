@@ -1,6 +1,29 @@
 # UI Components Documentation
 
-This folder contains **Pure UI Components** - components that only handle presentation and have no business logic.
+This folder contains **Pure UI Components** — presentation-only. Pair these with container/page logic so students can focus on either UI or behavior separately.
+
+## Page UI pattern (for teaching)
+- Keep **pages/containers** for data fetching, state, and routing.
+- Use these **UI components** for rendering only (props in, callbacks out).
+- For a “page UI only” version, create a `SomePageUI` component that:
+  - Receives data/flags via props (`loading`, `error`, `items`, etc.).
+  - Exposes callbacks (`onSubmit`, `onDelete`, `onApply`, `onSelect`).
+  - Contains zero side effects (no API calls, no global state).
+
+Example shell:
+```jsx
+const SomePageUI = ({ data = [], loading, error, onAction }) => (
+  <div>
+    {error && <Alert type="error" message={error} />}
+    {loading ? <LoadingSpinner /> : data.map(item => (
+      <Card key={item.id} onClick={() => onAction(item.id)}>
+        {item.title}
+      </Card>
+    ))}
+  </div>
+)
+```
+
 
 ## Component Structure
 
@@ -305,6 +328,352 @@ const JobCreatePage = () => {
 }
 ```
 
+---
+
+## Page UI Components
+
+These are complete page-level UI components that can be used to separate presentation from logic. Each component receives all data via props and exposes callbacks for user interactions.
+
+### 13. LandingpageUI
+**Purpose**: Display all available jobs in a grid layout
+
+**Props**:
+- `jobs`: Array of job objects
+- `loading`: Boolean for loading state
+- `error`: Error message string
+- `onJobClick`: Callback when job card is clicked (receives job object)
+- `onViewDetails`: Callback when "View Details" button is clicked (receives job object)
+
+**Example**:
+```jsx
+<LandingpageUI
+  jobs={jobsList}
+  loading={isLoading}
+  error={errorMessage}
+  onJobClick={(job) => navigate(`/job/${job._id}`)}
+  onViewDetails={(job) => navigate(`/job/${job._id}`)}
+/>
+```
+
+---
+
+### 14. JobDetailUI
+**Purpose**: Display single job details with application functionality
+
+**Props**:
+- `job`: Job object with all details
+- `isJobProvider`: Boolean - is user a job provider
+- `isJobOwner`: Boolean - does user own this job
+- `isJobSeeker`: Boolean - is user a job seeker
+- `loading`: Boolean for loading state
+- `error`: Error message string
+- `success`: Success message string
+- `hasApplied`: Boolean - has user applied
+- `applicationStatus`: String - application status ("applied", "in_review", etc.)
+- `applying`: Boolean - is application in progress
+- `cvFileName`: String - name of uploaded CV file
+- `onBack`: Callback for back button
+- `onApply`: Callback for apply button
+- `onFileChange`: Callback for file input change
+- `onFileRemove`: Callback for remove file button
+- `onViewApplications`: Callback for view applications button (job provider)
+- `onViewMyApplications`: Callback for view my applications link
+
+**Example**:
+```jsx
+<JobDetailUI
+  job={jobData}
+  isJobProvider={userRole === "jobprovider"}
+  isJobOwner={jobData.UserId === currentUserId}
+  isJobSeeker={userRole === "jobseeker"}
+  hasApplied={hasApplied}
+  applicationStatus={status}
+  applying={isApplying}
+  cvFileName={selectedFile?.name}
+  onBack={() => navigate("/")}
+  onApply={handleApply}
+  onFileChange={handleFileChange}
+  onFileRemove={handleRemoveFile}
+  onViewApplications={() => navigate(`/job/${jobId}/applications`)}
+/>
+```
+
+---
+
+### 15. JobCreateUI
+**Purpose**: Form for creating a new job
+
+**Props**:
+- `formData`: Object with {title, company, location, salary, description}
+- `loading`: Boolean for loading state
+- `error`: Error message string
+- `success`: Success message string
+- `onChange`: Change handler for form inputs
+- `onSubmit`: Submit handler for form
+- `onCancel`: Cancel handler
+
+**Example**:
+```jsx
+<JobCreateUI
+  formData={jobForm}
+  loading={isLoading}
+  error={errorMessage}
+  success={successMessage}
+  onChange={handleChange}
+  onSubmit={handleSubmit}
+  onCancel={() => navigate("/dashboard")}
+/>
+```
+
+---
+
+### 16. DashboardUI
+**Purpose**: Interactive dashboard with sidebar navigation
+
+**Props**:
+- `user`: User object with name, email, role
+- `isJobProvider`: Boolean - is user a job provider
+- `sidebarOpen`: Boolean - is sidebar open
+- `activeTab`: String - current active tab ("overview", "profile", "settings")
+- `stats`: Object with {totalJobs, myJobs, applications}
+- `onToggleSidebar`: Callback to toggle sidebar
+- `onNavigate`: Callback for navigation (receives path string)
+- `onLogout`: Callback for logout button
+
+**Example**:
+```jsx
+<DashboardUI
+  user={userData}
+  isJobProvider={userData?.role === "jobprovider"}
+  sidebarOpen={isSidebarOpen}
+  activeTab={currentTab}
+  stats={{totalJobs: 100, myJobs: 5, applications: 3}}
+  onToggleSidebar={() => setSidebarOpen(!isSidebarOpen)}
+  onNavigate={(path) => navigate(path)}
+  onLogout={handleLogout}
+/>
+```
+
+---
+
+### 17. JobApplicationsUI
+**Purpose**: Display and manage applications for a job (Job Provider view)
+
+**Props**:
+- `job`: Job object
+- `applications`: Array of application objects
+- `loading`: Boolean for loading state
+- `error`: Error message string
+- `success`: Success message string
+- `onBack`: Callback for back button
+- `onAccept`: Callback for accept button (receives applicationId)
+- `onReject`: Callback for reject button (receives applicationId)
+- `onInReview`: Callback for mark as in review button (receives applicationId)
+
+**Example**:
+```jsx
+<JobApplicationsUI
+  job={jobData}
+  applications={applicationsList}
+  loading={isLoading}
+  error={errorMessage}
+  success={successMessage}
+  onBack={() => navigate(`/job/${jobId}`)}
+  onAccept={(appId) => handleStatusUpdate(appId, "accepted")}
+  onReject={(appId) => handleStatusUpdate(appId, "rejected")}
+  onInReview={(appId) => handleStatusUpdate(appId, "in_review")}
+/>
+```
+
+---
+
+### 18. MyApplicationsUI
+**Purpose**: Display all applications by a job seeker
+
+**Props**:
+- `applications`: Array of application objects with populated JobId
+- `loading`: Boolean for loading state
+- `error`: Error message string
+- `onBrowseJobs`: Callback for browse jobs button
+- `onViewJob`: Callback when application card is clicked (receives jobId)
+
+**Example**:
+```jsx
+<MyApplicationsUI
+  applications={myApplications}
+  loading={isLoading}
+  error={errorMessage}
+  onBrowseJobs={() => navigate("/")}
+  onViewJob={(jobId) => navigate(`/job/${jobId}`)}
+/>
+```
+
+---
+
+### 19. MyJobsUI
+**Purpose**: Display and manage jobs posted by job provider
+
+**Props**:
+- `jobs`: Array of job objects
+- `loading`: Boolean for loading state
+- `error`: Error message string
+- `success`: Success message string
+- `editId`: String - ID of job being edited (null if not editing)
+- `editForm`: Object with {title, company, location, salary, description}
+- `onCreateJob`: Callback for create new job button
+- `onStartEdit`: Callback to start editing (receives job object)
+- `onEditChange`: Change handler for edit form
+- `onSaveEdit`: Callback to save edit
+- `onCancelEdit`: Callback to cancel edit
+- `onDelete`: Callback for delete button (receives jobId)
+- `onViewJob`: Callback to view job details (receives jobId)
+
+**Example**:
+```jsx
+<MyJobsUI
+  jobs={myJobsList}
+  loading={isLoading}
+  error={errorMessage}
+  success={successMessage}
+  editId={editingJobId}
+  editForm={editFormData}
+  onCreateJob={() => navigate("/job/create")}
+  onStartEdit={(job) => startEdit(job)}
+  onEditChange={handleEditChange}
+  onSaveEdit={handleSaveEdit}
+  onCancelEdit={handleCancelEdit}
+  onDelete={(jobId) => handleDelete(jobId)}
+  onViewJob={(jobId) => navigate(`/job/${jobId}`)}
+/>
+```
+
+---
+
+### 20. LoginUI
+**Purpose**: Login form component
+
+**Props**:
+- `formData`: Object with {email, password}
+- `loading`: Boolean for loading state
+- `error`: Error message string
+- `onChange`: Change handler for form inputs
+- `onSubmit`: Submit handler for form
+- `onNavigateToRegister`: Callback for register link
+
+**Example**:
+```jsx
+<LoginUI
+  formData={loginForm}
+  loading={isLoading}
+  error={errorMessage}
+  onChange={handleChange}
+  onSubmit={handleSubmit}
+  onNavigateToRegister={() => navigate("/register")}
+/>
+```
+
+---
+
+### 21. RegisterUI
+**Purpose**: Registration form component
+
+**Props**:
+- `formData`: Object with {name, email, password, role}
+- `loading`: Boolean for loading state
+- `error`: Error message string
+- `onChange`: Change handler for form inputs
+- `onSubmit`: Submit handler for form
+- `onNavigateToLogin`: Callback for login link
+
+**Example**:
+```jsx
+<RegisterUI
+  formData={registerForm}
+  loading={isLoading}
+  error={errorMessage}
+  onChange={handleChange}
+  onSubmit={handleSubmit}
+  onNavigateToLogin={() => navigate("/login")}
+/>
+```
+
+---
+
+## Complete Page UI Components Structure
+
+For teaching purposes, you can create separate UI components for each page:
+
+```
+components/
+├── ui/                    # Small reusable components
+│   ├── Button.jsx
+│   ├── Input.jsx
+│   ├── Alert.jsx
+│   └── ...
+└── pages/                 # Page-level UI components (NEW)
+    ├── LandingpageUI.jsx
+    ├── JobDetailUI.jsx
+    ├── JobCreateUI.jsx
+    ├── DashboardUI.jsx
+    ├── JobApplicationsUI.jsx
+    ├── MyApplicationsUI.jsx
+    ├── MyJobsUI.jsx
+    ├── LoginUI.jsx
+    └── RegisterUI.jsx
+```
+
+## Complete Example: Separating UI from Logic
+
+### Before (Mixed Logic and UI):
+```jsx
+// pages/JobCreate.jsx - Contains both logic and UI
+const JobCreate = () => {
+  const [form, setForm] = useState({...})
+  const [loading, setLoading] = useState(false)
+  
+  const handleSubmit = async (e) => {
+    // API call logic
+  }
+  
+  return (
+    <form onSubmit={handleSubmit}>
+      {/* All UI here */}
+    </form>
+  )
+}
+```
+
+### After (Separated):
+```jsx
+// components/pages/JobCreateUI.jsx - Pure UI
+const JobCreateUI = ({ formData, loading, error, onChange, onSubmit, onCancel }) => {
+  return (
+    <form onSubmit={onSubmit}>
+      {/* All UI here - no logic */}
+    </form>
+  )
+}
+
+// pages/JobCreate.jsx - Only Logic
+const JobCreate = () => {
+  const [form, setForm] = useState({...})
+  const [loading, setLoading] = useState(false)
+  
+  const handleSubmit = async (e) => {
+    // API call logic
+  }
+  
+  return (
+    <JobCreateUI
+      formData={form}
+      loading={loading}
+      onChange={handleChange}
+      onSubmit={handleSubmit}
+    />
+  )
+}
+```
+
 ## Teaching Notes
 
 1. **Separation of Concerns**: UI components handle presentation, pages handle logic
@@ -313,4 +682,6 @@ const JobCreatePage = () => {
 4. **Events Up**: User interactions flow from child (UI component) to parent (page) via callbacks
 5. **No Side Effects**: UI components don't make API calls or manage global state
 6. **Easy Testing**: Pure components are easier to test
+7. **Teaching Strategy**: Students can learn UI design separately from business logic
+8. **Code Organization**: Clear separation makes codebase more maintainable
 
