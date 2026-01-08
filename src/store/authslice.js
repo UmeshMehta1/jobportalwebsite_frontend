@@ -12,7 +12,8 @@ const authSlice = createSlice({
     name: "auth",
 
     initialState: {
-        data: [],  
+        data: JSON.parse(localStorage.getItem('user')) || [],
+        // data: [],  
         status: STATUSES.IDLE,
         token: localStorage.getItem('token') || "",
         isAuthenticated: !!localStorage.getItem('token'),
@@ -23,6 +24,7 @@ const authSlice = createSlice({
         setUser(state, action) {
             state.data = action.payload
             state.isAuthenticated = true
+            localStorage.setItem('user', JSON.stringify(action.payload))
         },
 
         setStatus(state, action) {
