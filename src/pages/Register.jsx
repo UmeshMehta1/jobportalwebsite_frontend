@@ -11,6 +11,8 @@ const navigate = useNavigate()
 
   const initialrole=  location.state?.role
 
+  console.log(initialrole,"initialrole")
+
   const {status,error} = useSelector((state)=>state.auth)
 
  //
