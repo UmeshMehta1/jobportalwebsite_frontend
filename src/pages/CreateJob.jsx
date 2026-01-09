@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
+import { APIAuthenticated } from '../http'
+import { useNavigate } from 'react-router-dom'
 
 
+const CreateJob = () => {
+  const navigate = useNavigate()
 
-const CreateJob = () => {33223423
 
     const [jobTitle,setJobTitle]= useState("")
 
@@ -17,17 +20,23 @@ const CreateJob = () => {33223423
 
    const formData ={
     title:jobTitle,
-   description: jobDescription,
-  salary:  salary,
-  location:  location,
-   company: companyName
+    description: jobDescription,
+     salary:  salary,
+     location:  location,
+     company: companyName
    }
-    
 
-    const handleSubmit =async()=>{
-         
+
+    const handleSubmit =async(e)=>{
+         e.preventDefault()
+         console.log("hello test")
+
+         const res = await  APIAuthenticated.post("job/postjob/", formData)
+         console.log(res)
+         if(res.status===201){
+          navigate("/dashboard")
+         }
     }
-
   
   return (
    
@@ -49,7 +58,7 @@ const CreateJob = () => {33223423
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Job Description
         </label>
-        <textarea rows={4} value={jobDescription} onChange={(e)=>setJobDescription()} placeholder="Describe job responsibilities..." required className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" defaultValue={""} />
+        <textarea rows={4} value={jobDescription} onChange={(e)=>setJobDescription(e.target.value)} placeholder="Describe job responsibilities..." required className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
       </div>
       {/* Location */}
       <div>
