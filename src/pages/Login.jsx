@@ -42,8 +42,7 @@ const navigate= useNavigate()
     }))
   }
 
-
-
+  
   return (
     <div className="max-w-md mx-auto my-12 px-5">
       <div className="bg-white p-8 rounded-lg shadow-md">

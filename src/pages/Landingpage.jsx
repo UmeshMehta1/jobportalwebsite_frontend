@@ -1,6 +1,34 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { API } from '../http'
+
+
 
 const Landingpage = () => {
+
+  const [data, setData]=useState({
+
+  })
+
+  const handleChange = (e)=>{
+    const {name, value}= e.target
+
+    setData((prev)=>({
+      ...prev,
+      [name]:value
+    }))
+  }
+    
+  const fetchJob =async()=>{
+     const result = await API.get("jobs/getjobs")
+     console.log(result)
+     setData(result.data)
+  }
+
+  
+ useEffect(()=>{
+    fetchJob()
+ },[])
+
   return (
 
     <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 p-6 border border-gray-100">

@@ -10,7 +10,6 @@ const STATUSES = Object.freeze({
 
 const authSlice = createSlice({
     name: "auth",
-
     initialState: {
         data: JSON.parse(localStorage.getItem('user')) || [],
         // data: [],  
