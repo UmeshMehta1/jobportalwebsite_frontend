@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import Landingpage from './pages/Landingpage';
 import Navbar from './pages/Navbar';
 import CreateJob from './pages/CreateJob';
+import Singlepage from './pages/Singlepage';
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
      <Route path="/register" element={<Register/>}/>
      <Route path="/dashboard" element={<Dashboard/>}/>
      <Route path="/createjob" element={<CreateJob/>}/>
+     <Route path="/singlepage" element={<Singlepage/>}/>
     </Routes>
 
    </BrowserRouter>
