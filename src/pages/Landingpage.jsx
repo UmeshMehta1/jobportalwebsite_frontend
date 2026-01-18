@@ -26,8 +26,8 @@ const Landingpage = () => {
 
  console.log("test",data)
 
-  const handleNavigate=()=>{
-    navigate("/singlepage")
+  const handleNavigate=(id)=>{
+    navigate("/singlepage/"+id)
   }
 
   return (
@@ -59,10 +59,10 @@ const Landingpage = () => {
       {/* Footer */}
       <div className="flex justify-between items-center">
         <div className="flex items-center text-sm text-gray-500">
-          📍 {job.location} <span className="ml-1">{}</span>
+          📍 <span className="ml-1">{job.location} </span>
         </div>
 
-        <button onClick={handleNavigate} className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg transition">
+        <button onClick={() => handleNavigate(job._id)} className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg transition">
           View Details
         </button>
       </div>

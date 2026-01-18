@@ -4,14 +4,14 @@ import { registerUser } from "../store/authslice.js"
 import {useSelector,useDispatch} from "react-redux"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 const Register = () => {
-const location = useLocation()
+// const location = useLocation()
 
 const dispatch = useDispatch()
 const navigate = useNavigate()
 
-  const initialrole=  location.state?.role
+  // const initialrole=  location.state?.role
 
-  console.log(initialrole,"initialrole")
+  // console.log(initialrole,"initialrole")
 
   const {status,error} = useSelector((state)=>state.auth)
 
@@ -21,7 +21,6 @@ const navigate = useNavigate()
    name:"",
     email:"",
     password:"",
-    role:initialrole, 
   })
 
   const handleChange=(e)=>{
@@ -103,8 +102,8 @@ const navigate = useNavigate()
 
           {/* Selected Role Display (Read-only) */}
           <div className="mb-5">
-            <label className="block mb-2 font-medium">Select Role:</label>
-            <select
+            {/* <label className="block mb-2 font-medium">Select Role:</label> */}
+            {/* <select
               name="role"
               value={formData.role}
               onChange={handleChange}
@@ -113,10 +112,10 @@ const navigate = useNavigate()
             >
               <option value="jobseeker">Job Seeker</option>
               <option value="jobprovider">Job Provider</option>
-            </select>
-            <p className="text-xs text-gray-600 mt-1">
+            </select> */}
+            {/* <p className="text-xs text-gray-600 mt-1">
               Choose your role to get started.
-            </p>
+            </p> */}
           </div>
 
           {/* Submit Button */}

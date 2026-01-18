@@ -21,7 +21,7 @@ const App = () => {
      <Route path="/register" element={<Register/>}/>
      <Route path="/dashboard" element={<Dashboard/>}/>
      <Route path="/createjob" element={<CreateJob/>}/>
-     <Route path="/singlepage" element={<Singlepage/>}/>
+     <Route path="/singlepage/:id" element={<Singlepage/>}/>
     </Routes>
 
    </BrowserRouter>

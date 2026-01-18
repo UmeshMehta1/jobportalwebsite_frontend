@@ -34,7 +34,7 @@ const CreateJob = () => {
          const res = await  APIAuthenticated.post("job/postjob/", formData)
          console.log(res)
          if(res.status===201){
-          navigate("/dashboard")
+          navigate("/")
          }
     }
   

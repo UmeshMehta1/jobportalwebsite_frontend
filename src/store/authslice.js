@@ -67,7 +67,7 @@ export function registerUser(data) {
         dispatch(clearError())
         
         // Validate input - updated to match form fields
-        if (!data.name || !data.email ||!data.role || !data.password) {
+        if (!data.name || !data.email || !data.password) {
             const errorMessage = "All fields are required"
             dispatch(setError(errorMessage))
             dispatch(setStatus(STATUSES.ERROR))

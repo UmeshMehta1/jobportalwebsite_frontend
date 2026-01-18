@@ -43,11 +43,13 @@ const navigate = useNavigate()
           Logout
         </button >
 
+        {data?.role==="jobprovider" && (
+
      <button onClick={createjob} className="px-5 py-2.5 bg-green-600 text-white border-none rounded cursor-pointer text-base hover:bg-green-700 transition-colors"
 >
         create job
      </button>
-
+        )}
       </div>
     </div>
   )
