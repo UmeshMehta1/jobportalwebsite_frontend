@@ -7,9 +7,6 @@ const Landingpage = () => {
   const navigate=useNavigate()
 
   const [data, setData]=useState([])
-
-  
- 
  const getJobData=async()=>{
     console.log("called")
   const result= await API.get("job/getjobs")
